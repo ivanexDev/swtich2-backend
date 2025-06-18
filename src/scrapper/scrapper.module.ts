@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
-import { SeedService } from './seed.service';
-import { SeedController } from './seed.controller';
+import { ScrapperService } from './scrapper.service';
 import { WebsitesModule } from 'src/websites/websites.module';
 import { ProductsModule } from 'src/products/products.module';
 
 @Module({
-  controllers: [SeedController],
-  providers: [SeedService],
+  controllers: [],
+  providers: [ScrapperService],
   imports: [WebsitesModule, ProductsModule],
 })
-export class SeedModule {}
+export class ScrapperModule {}

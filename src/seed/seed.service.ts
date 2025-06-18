@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { StoreService } from 'src/store/store.service';
+import { CreateProductDto } from 'src/products/dto/create-product.dto';
+import { ProductsService } from 'src/products/products.service';
+import { WebsitesService } from 'src/websites/websites.service';
 
 export interface GoogleSheetResponse {
   range: string;
@@ -11,14 +12,17 @@ export interface GoogleSheetResponse {
 
 export interface StoreData {
   websiteName: string;
-  switch2: string;
-  switch2bundle: string;
+  productName: string;
+  url: string;
   querySelector: string;
 }
 
 @Injectable()
 export class SeedService {
-  constructor(private readonly storesService: StoreService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly websitesService: WebsitesService,
+  ) {}
 
   public async populateDb() {
     try {
@@ -28,9 +32,13 @@ export class SeedService {
       );
 
       const data = res.data.values;
-      const [headers, ...rows] = data;
+      const [, ...rows] = data;
 
-      await this.storesService.createMany(this.formatData(rows));
+      const formatedData = this.formatData(rows);
+      const allWebsites = this.getWebsiteNames(formatedData);
+
+      await this.websitesService.createMany(allWebsites);
+      await this.productsService.createMany(formatedData as CreateProductDto[]);
 
       return 'Seed executed';
     } catch (error) {
@@ -40,15 +48,25 @@ export class SeedService {
 
   private formatData(data: Array<string[]>) {
     const formattedData: StoreData[] = data.map((row) => {
-      const [websiteName, switch2, switch2bundle, querySelector] = row;
+      const [websiteName, productName, url, querySelector] = row;
       return {
         websiteName,
-        switch2,
-        switch2bundle,
+        productName,
+        url,
         querySelector,
       };
     });
 
     return formattedData;
+  }
+
+  private getWebsiteNames(arr: StoreData[]) {
+    const websitesNames = [
+      ...new Set(arr.map((website) => website.websiteName)),
+    ];
+
+    return websitesNames.map((website) => {
+      return { websiteName: website };
+    });
   }
 }
