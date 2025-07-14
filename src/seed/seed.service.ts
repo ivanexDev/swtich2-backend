@@ -26,6 +26,12 @@ export class SeedService {
 
   public async populateDb() {
     try {
+      const quantity = await this.productsService.count();
+      if (quantity && quantity > 0) {
+        console.log('bdd ok!');
+        return 'bdd ok!';
+      }
+
       const API_KEY = process.env.GOOGLE_API_KEY;
       const res = await axios.get<GoogleSheetResponse>(
         `https://sheets.googleapis.com/v4/spreadsheets/1I7oqHedKKFXbcSv-tVKWKMIr6C-3cAE3yrH3nfKOjl4/values/Sheet1?key=${API_KEY}`,

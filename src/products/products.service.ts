@@ -41,4 +41,12 @@ export class ProductsService {
       console.log(error);
     }
   }
+
+  async count() {
+    try {
+      return await this.productRepository.count();
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

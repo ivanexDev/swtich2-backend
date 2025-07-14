@@ -8,5 +8,6 @@ import { ProductsModule } from 'src/products/products.module';
   controllers: [SeedController],
   providers: [SeedService],
   imports: [WebsitesModule, ProductsModule],
+  exports: [SeedService],
 })
 export class SeedModule {}

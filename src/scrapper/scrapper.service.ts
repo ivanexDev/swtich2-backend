@@ -4,6 +4,7 @@ import { DataForScrapper } from './scrapper.interface';
 import { chromium } from 'playwright';
 import { WebsitesService } from 'src/websites/websites.service';
 import { ProductsService } from 'src/products/products.service';
+import { SeedService } from 'src/seed/seed.service';
 
 @Injectable()
 export class ScrapperService implements OnModuleInit {
@@ -12,9 +13,10 @@ export class ScrapperService implements OnModuleInit {
   constructor(
     private readonly websitesService: WebsitesService,
     private readonly productsService: ProductsService,
+    private readonly seedService: SeedService,
   ) {}
-  //@Cron('0 0,12 * * *') // 12pm y 00 am
-  @Cron('*/20 * * * * *') //20 segundos
+  // @Cron('0 0,12 * * *') // 12pm y 00 am
+  //@Cron('*/20 * * * * *') //20 segundos
   async getPrice() {
     const stores = await this.websitesService.findAll();
 
@@ -49,11 +51,12 @@ export class ScrapperService implements OnModuleInit {
       await page.goto(url);
 
       // Espera explícita por el selector
-      await page.waitForSelector(querySelector);
+      await page.waitForSelector(querySelector, { timeout: 2000 });
 
-      const price = await page.$eval(querySelector, (el) =>
-        el.childNodes[0].textContent?.trim(),
-      );
+      const price = await page.$eval(querySelector, (el) => {
+        console.log(el);
+        return el.textContent?.trim();
+      });
 
       await browser.close();
 
@@ -75,10 +78,12 @@ export class ScrapperService implements OnModuleInit {
     return Number(cleaned);
   }
 
-  onModuleInit() {
-    // this.getPrice();
-    console.log(
-      "Si quieres iniciar el scraping descomenta la linea 79 de 'scrapper.service.ts'",
-    );
+  async onModuleInit() {
+    await this.seedService.populateDb();
+
+    this.getPrice();
+    // console.log(
+    //   "Si quieres iniciar el scraping descomenta la linea 79 de 'scrapper.service.ts'",
+    // );
   }
 }
