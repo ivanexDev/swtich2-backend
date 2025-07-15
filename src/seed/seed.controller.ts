@@ -7,6 +7,7 @@ export class SeedController {
 
   @Get()
   execute() {
-    return this.seedService.populateDb();
+    // return this.seedService.populateDb();
+    return 'Not implemented';
   }
 }

@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { WebsitesService } from './websites.service';
 import { CreateWebsiteDto } from './dto/create-website.dto';
+import { instanceToPlain } from 'class-transformer';
 
 @Controller('websites')
 export class WebsitesController {
@@ -13,7 +14,8 @@ export class WebsitesController {
 
   @Get()
   findAll() {
-    return this.websitesService.findAll();
+    const websites = this.websitesService.findAll();
+    return instanceToPlain(websites);
   }
 
   @Get(':id')

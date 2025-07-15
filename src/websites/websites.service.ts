@@ -28,11 +28,13 @@ export class WebsitesService {
   }
 
   async findAll() {
-    return await this.websitesRepository.find({
+    const websites = await this.websitesRepository.find({
       relations: {
         products: true,
       },
     });
+
+    return websites;
   }
 
   findOne(id: number) {

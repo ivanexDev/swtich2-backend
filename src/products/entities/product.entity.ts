@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Website } from 'src/websites/entities/website.entity';
 import {
   Entity,
@@ -24,6 +25,7 @@ export class Product {
   @Column('text')
   websiteName: string;
 
+  @Exclude()
   @Column('text')
   querySelector: string;
 

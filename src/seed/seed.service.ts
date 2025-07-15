@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { ProductsService } from 'src/products/products.service';
@@ -19,6 +19,7 @@ export interface StoreData {
 
 @Injectable()
 export class SeedService {
+  private readonly logger = new Logger(SeedService.name);
   constructor(
     private readonly productsService: ProductsService,
     private readonly websitesService: WebsitesService,
@@ -28,7 +29,7 @@ export class SeedService {
     try {
       const quantity = await this.productsService.count();
       if (quantity && quantity > 0) {
-        console.log('bdd ok!');
+        this.logger.log('bdd ok!');
         return 'bdd ok!';
       }
 

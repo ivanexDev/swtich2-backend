@@ -44,14 +44,24 @@ export class ScrapperService implements OnModuleInit {
     try {
       const context = await browser.newContext({
         userAgent:
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        viewport: { width: 1280, height: 720 },
+        locale: 'es-CL',
+        geolocation: { latitude: -33.45, longitude: -70.6667 },
+        permissions: ['geolocation'],
+      });
+
+      await context.addInitScript(() => {
+        Object.defineProperty(navigator, 'webdriver', {
+          get: () => false,
+        });
       });
       const page = await context.newPage();
 
       await page.goto(url);
 
       // Espera explícita por el selector
-      await page.waitForSelector(querySelector, { timeout: 2000 });
+      await page.waitForSelector(querySelector, { timeout: 5000 });
 
       const price = await page.$eval(querySelector, (el) => {
         console.log(el);
