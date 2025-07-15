@@ -15,7 +15,7 @@ export class ScrapperService implements OnModuleInit {
     private readonly productsService: ProductsService,
     private readonly seedService: SeedService,
   ) {}
-  // @Cron('0 0,12 * * *') // 12pm y 00 am
+  @Cron('0 0,12 * * *') // 12pm y 00 am
   //@Cron('*/20 * * * * *') //20 segundos
   async getPrice() {
     const stores = await this.websitesService.findAll();
@@ -80,8 +80,7 @@ export class ScrapperService implements OnModuleInit {
 
   async onModuleInit() {
     await this.seedService.populateDb();
-
-    this.getPrice();
+    // this.getPrice();
     // console.log(
     //   "Si quieres iniciar el scraping descomenta la linea 79 de 'scrapper.service.ts'",
     // );
